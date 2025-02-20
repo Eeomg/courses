@@ -35,6 +35,7 @@
                         <th>price</th>
                         <th>category</th>
                         <th>students</th>
+                        <th>videos</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -50,7 +51,8 @@
                             <td>{{ $course->title }}</td>
                             <td>{{ $course->price }}</td>
                             <td>{{ $course->category->name }}</td>
-                            <td>{{ $course->students_count ?? 0 }}</td>
+                            <td><a href="{{route('course-students.show',$course->id)}}">{{ $course->students_count ?? 0 }} students</a></td>
+                            <td>{{ $course->videos_count ?? 0 }}</td>
                             <td>
                                 <span class="badge {{ $course->status == 'active' ? 'bg-success' : 'bg-danger' }}">
                                     {{ $course->status == 'active' ? 'Active' : 'Inactive' }}

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Facades\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Student;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -44,22 +45,25 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required|string',
+            ]);
 
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
+            $user = Student::where('email', $request->email)
+                ->where('active',1)
+                ->firstOrFail();
 
-        $user = Student::where('email', $request->email)->first();
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                return response()->json(['message' => 'Invalid credentials'], 401);
+            }
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return response()->json(['token' => $token, 'user' => $user], 200);
+        }catch (ModelNotFoundException $e){
             return response()->json(['message' => 'Invalid credentials'], 401);
-        }
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json(['token' => $token, 'user' => $user], 200);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             return ApiResponse::serverError();
         }
     }

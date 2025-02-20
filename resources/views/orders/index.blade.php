@@ -24,6 +24,7 @@
                         <th>name</th>
                         <th>email</th>
                         <th>phone</th>
+                        <th>payment_method</th>
                         <th>total_price</th>
                         <th>status</th>
                         <th>Actions</th>
@@ -36,6 +37,7 @@
                             <td>{{ $order->student->name }}</td>
                             <td>{{ $order->student->email }}</td>
                             <td>{{ $order->student->phone }}</td>
+                            <td>{{ $order->payment->name .' : '. $order->phone }}</td>
                             <td>{{ $order->total_price }}</td>
                             <td>
                                 <span class="badge {{ $order->checked ? 'bg-success' : 'bg-danger' }}">
@@ -59,7 +61,9 @@
                                                     @csrf
                                                     @method('PUT')
                                                     <div class="mb-3 m-auto text-center" >
-                                                        <img src="{{$order->reset_url}}" width="150">
+                                                        @if($order->reset)
+                                                            <img src="{{$order->reset_url}}" width="150">
+                                                        @endif
                                                     </div>
                                                     <div class="mb-3">
                                                         <input type="hidden" name="order_id" value="{{$order->id}}" class="form-control" required>
@@ -75,6 +79,15 @@
                                     </div>
                                     <!-- /.modal-dialog -->
                                 </div>
+
+                                <x-model name="delete-{{ $order->id }}" status="danger" icon="fa fa-trash"
+                                         message="Are you sure you want to delete this order?">
+                                    <form action="{{ route('orders.destroy', $order->id) }}" method="post">
+                                        @csrf
+                                        @method('delete')
+                                        <button type="submit" class="btn btn-danger btn-sm">Yes, Delete</button>
+                                    </form>
+                                </x-model>
                             </td>
                         </tr>
                     @endforeach

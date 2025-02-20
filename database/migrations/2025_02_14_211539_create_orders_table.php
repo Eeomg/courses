@@ -16,7 +16,9 @@ return new class extends Migration
             $table->foreignId('student_id')->constrained('students')->cascadeOnDelete();
             $table->decimal('total_price');
             $table->boolean('checked')->default(false);
-            $table->string('reset');
+            $table->string('phone')->nullable();
+            $table->string('reset')->nullable();
+            $table->foreignId('payment_id')->nullable()->constrained('payments')->nullOnDelete();
             $table->timestamps();
         });
     }

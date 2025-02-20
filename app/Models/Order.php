@@ -9,9 +9,16 @@ class Order extends Model
     protected $fillable = [
         'student_id',
         'total_price',
+        'phone',
         'checked',
+        'payment_id',
         'reset'
     ];
+
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class);
+    }
 
     public function student()
     {
@@ -30,6 +37,6 @@ class Order extends Model
 
     public function getResetUrlAttribute()
     {
-        return env('APP_URL') .'/public/images/'. $this->reset;
+        return env('APP_IMAGES_URL').$this->reset;
     }
 }

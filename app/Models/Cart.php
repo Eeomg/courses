@@ -17,7 +17,7 @@ class Cart extends pivot
 
     protected $primaryKey = null;
 
-    protected $fillable = ['user_id', 'course_id'];
+    protected $fillable = ['student_id', 'course_id'];
 
     public function course(): BelongsTo
     {

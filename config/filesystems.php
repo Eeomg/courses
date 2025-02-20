@@ -42,16 +42,25 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',
-            'visibility' => 'public',
+            'visibility' => 'private',
             'throw' => false,
             'report' => false,
         ],
+
+//        'files' => [
+//            'driver' => 'local',
+//            'root' => storage_path('app/uploads'),
+//            'url' => env('APP_URL').'/storage',
+//            'visibility' => 'private',
+////            'throw' => false,
+////            'report' => false,
+//        ],
 
         'images' => [
             'driver' => 'local',
             'root' => public_path('images'),
             'url' => env('APP_URL').'/public/images',
-            'visibility' => 'public',
+            'visibility' => 'private',
             'throw' => false,
         ],
 

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password')->nullable();
             $table->enum('provider',['google','email'])->default('email');
             $table->string('provider_id')->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }

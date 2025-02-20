@@ -30,7 +30,10 @@ class CoursesController extends Controller
     public function show($id)
     {
         try {
-            $category = Course::with('category','videos')->findOrFail($id);
+            $category = Course::with('category','videos')
+                ->where('id',$id)
+                ->orWhere('slug',$id)
+                ->firstOrFail();
             return ApiResponse::success(new CourseResource($category));
         } catch (ModelNotFoundException $exception) {
             return ApiResponse::notFound();

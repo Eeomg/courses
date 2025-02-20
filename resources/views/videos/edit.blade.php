@@ -45,9 +45,15 @@
                         <form action="{{ route('course-videos.update', $video->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
-                            <div class="mb-3">
-                                <label for="title" class="form-label fw-bold">Video Title</label>
-                                <input type="text" name="title" class="form-control form-control-lg shadow-sm" id="title" value="{{ old('title',$video->title) }}" required>
+                            <div class="mb-3 row">
+                                <div class="col-10">
+                                    <label for="title" class="form-label fw-bold">Video Title</label>
+                                    <input type="text" name="title" class="form-control form-control-lg shadow-sm" id="title" value="{{ old('title',$video->title) }}" required>
+                                </div>
+                                <div class="col-2">
+                                    <label for="order" class="form-label fw-bold">Video Order</label>
+                                    <input type="number" name="order" class="form-control form-control-lg shadow-sm" id="order" value="{{ old('order',$video->order) }}" required>
+                                </div>
                             </div>
 
                             <div class="mb-3">
@@ -55,11 +61,17 @@
                                 <textarea name="description" class="form-control form-control-lg shadow-sm" id="description" rows="4">{{ old('description',$video->description) }}</textarea>
                             </div>
 
+                            <label for="opened" class="form-label fw-bold">Opened</label>
+                            <div class="form-check">
+                                <input type="checkbox" name="opened" class="form-check-input" id="opened" value="1" {{ old('opened',$video->opened) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="opened">Is Opened?</label>
+                            </div>
+
                             <!-- ✅ إضافة input hidden لتخزين مسار الفيديو -->
                             <input type="hidden" name="video_path" id="video_path">
 
                             <div class="d-grid gap-2 mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" disabled>Upload Video</button>
+                                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">Upload Video</button>
                                 <a href="{{ route('courses.show', $video->course->id) }}" class="btn btn-secondary btn-lg">Cancel</a>
                             </div>
                         </form>

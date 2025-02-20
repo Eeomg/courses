@@ -57,7 +57,6 @@ class Course extends Model
 
     public function getCoverUrlAttribute($value)
     {
-        return env('APP_URL') . '/public/images/' . $this->cover;
-
+        return env('APP_IMAGES_URL'). $this->cover;
     }
 }

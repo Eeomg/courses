@@ -22,8 +22,7 @@ class CartController extends Controller
                 ->whereHas('course', function ($query) {
                     $query->where('status','active');
                 })->where(
-                    'student_id',
-                    request()->user('student')->id
+                    'student_id', request()->user('student')->id
                 )->get();
             return ApiResponse::success(CartResource::collection($cart));
         }catch (\Exception $e){
@@ -37,7 +36,10 @@ class CartController extends Controller
             $course = Course::where('status','active')
                 ->where('id',$id)
                 ->firstOrFail();
-            request()->user('student')->cart()->sync($course->id);
+            Cart::create([
+                'course_id' => $course->id,
+                'student_id' => request()->user('student')->id
+            ]);
             return ApiResponse::created(new CategoryCoursesResource($course),'add to cart');
         } catch (ModelNotFoundException $e) {
             return ApiResponse::notFound();

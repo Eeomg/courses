@@ -6,7 +6,7 @@
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <h3 class="mb-0 col-lg-10 col-md-6 col-sm-4">{{ $course->title }}</h3>
 
-                <a href="{{ route('course-videos.create', $course->id) }}" class="btn btn-primary text-darkfw-bold">
+                <a href="{{ route('course-videos.create', $course->id) }}" class="btn btn-primary text-dark fw-bold">
                     <i class="fa fa-plus-circle"></i> Add Video
                 </a>
             </div>
@@ -43,12 +43,10 @@
                                 </button>
 
                                 <div class="d-flex align-items-center gap-2">
-                                    <a href="{{ route('course-videos.show', $video->id) }}" class="btn btn-sm text-warning" title="View">
-                                        <i class="fa fa-eye"></i>
-                                    </a>
                                     <a href="{{ route('course-videos.edit', $video->id) }}" class="btn btn-sm text-success" title="Edit">
                                         <i class="fa fa-edit"></i>
                                     </a>
+
 
                                     <x-model name="delete-{{ $video->id }}" status="danger" icon="fa fa-trash"
                                              message="Are you sure you want to delete {{ $video->title }}?">
@@ -58,6 +56,17 @@
                                             <button type="submit" class="btn btn-danger btn-sm">Yes, Delete</button>
                                         </form>
                                     </x-model>
+
+                                    <a href="{{ route('course-videos.show', $video->id) }}" class="btn btn-sm text-secondary small title="View">
+                                        <i class="fa fa-eye"></i>
+                                    <span class="">
+                                        {{ $video->views }} views
+                                    </span>
+                                    </a>
+
+                                    <!-- عرض عدد المشاهدات -->
+
+
                                 </div>
                             </div>
 

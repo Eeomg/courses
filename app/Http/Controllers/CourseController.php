@@ -7,6 +7,7 @@ use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -17,7 +18,9 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::with('category', 'user')->latest()->paginate(10);
+        $courses = Course::with('category')
+            ->withCount('videos','students')
+            ->latest()->paginate(15);
         return view('courses.index', compact('courses'));
     }
 
@@ -55,8 +58,16 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        $course->load(['videos','category', 'user']);
+        $course->load(['videos','category', 'students']);
         return view('courses.show', compact('course'));
+    }
+
+
+    public function courseStudents(Course $course)
+    {
+        $course->load(['category','students']);
+        $students = $course->students()->paginate(15);
+        return view('courses.show-students', compact('course', 'students'));
     }
 
     /**
@@ -121,5 +132,31 @@ class CourseController extends Controller
             return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }
+
+
+    public function courseStudentsBulkAction(Request $request)
+    {
+        try {
+            $request->validate([
+                'ids' => 'required|array',
+                'ids.*' => 'exists:students,id',
+                'action' => 'required|in:delete',
+                'course_id' => 'required|integer|exists:courses,id',
+            ]);
+
+            $course = Course::findOrFail($request->course_id);
+            $students = Student::whereIn('id', $request->ids)->get();
+
+            if ($request->action === 'delete') {
+                $course->students()->detach($students->pluck('id'));
+                Alert::success("Success", "Students removed from the course successfully.");
+            }
+
+            return redirect()->route('course-students.show', $request->course_id);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+
 
 }

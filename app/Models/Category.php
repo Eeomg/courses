@@ -13,13 +13,13 @@ class Category extends Model
         parent::boot();
 
         static::creating(function ($category) {
-            $category->slug = static::generateUniqueSlug($category->title);
+            $category->slug = static::generateUniqueSlug($category->name);
         });
     }
 
-    private static function generateUniqueSlug($title)
+    private static function generateUniqueSlug($name)
     {
-        return Str::slug($title);
+        return Str::slug($name);
     }
 
 
@@ -30,7 +30,7 @@ class Category extends Model
 
     public function getCoverUrlAttribute()
     {
-        return env('APP_URL') .'/images/'.$this->cover;
+        return env('APP_IMAGES_URL').$this->cover;
     }
 
 }

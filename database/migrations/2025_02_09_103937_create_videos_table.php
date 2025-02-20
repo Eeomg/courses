@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug');
             $table->text('description');
+            $table->bigInteger('views')->unsigned()->default(0);
             $table->integer('order');
             $table->boolean('opened')->default(false);
             $table->string('video');

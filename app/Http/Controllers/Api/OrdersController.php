@@ -16,35 +16,48 @@ use Illuminate\Validation\ValidationException;
 
 class OrdersController extends Controller
 {
+    public $payments = ['cash' => 1, 'vodafone' => 2, 'instapay' => 3];
 
-    public function cartCheckout(Request $request)
+    public function cartCheckout(Request $request, string $payment)
     {
         try {
             $request->validate([
-                'reset' => 'required|file|mimes:jpeg,png,jpg,jfif'
+                'phone' => 'nullable|string',
+                'reset' => 'nullable|file|mimes:jpeg,png,jpg,jfif'
             ]);
-            $student = request()->user();
 
-            DB::transaction(function () use ($request, $student) {
-                $cart = Cart::with('course')
-                    ->where('student_id', $student->id)
-                    ->get();
+            $student = $request->user();
 
-                if($cart->isEmpty()){
-                    throw new ModelNotFoundException();
-                }
+            if (!array_key_exists($payment, $this->payments)) {
+                return ApiResponse::notFound();
+            }
 
-                $name = FileHandler::storeFile(
-                    $request->reset,
+            $cart = Cart::with('course')
+                ->where('student_id', $student->id)
+                ->get();
+
+            if ($cart->isEmpty()) {
+                throw new ModelNotFoundException();
+            }
+
+            $data = [
+                'student_id' => $student->id,
+                'phone' => $request->phone ?? '',
+                'payment_id' => $this->payments[$payment],
+                'total_price' => $cart->sum(fn($item) => $item->course->price)
+            ];
+
+
+            if (isset($request->reset) && $request->hasFile('reset')) {
+                $data['reset'] = FileHandler::storeFile(
+                    $request->file('reset'),
                     null,
-                    $request->reset->getClientOriginalExtension()
+                    $request->file('reset')->getClientOriginalExtension()
                 );
+            }
 
-                $order = Order::create([
-                    'student_id' => $student->id,
-                    'reset' => $name,
-                    'total_price' => $cart->sum(fn($item) => $item->course->price)
-                ]);
+            DB::transaction(function () use ($cart, $data) {
+                $order = Order::create($data);
 
                 $cart->each(function ($cart) use ($order) {
                     CoursesOrders::create([
@@ -56,41 +69,51 @@ class OrdersController extends Controller
                     ]);
                 });
 
-                Cart::where('student_id', $student->id)->delete();
-
+                Cart::where('student_id', $data['student_id'])->delete();
             });
+
             return ApiResponse::message('wait to check out');
         } catch (ModelNotFoundException $e) {
             return ApiResponse::notFound();
-        }catch (ValidationException $e) {
+        } catch (ValidationException $e) {
             return ApiResponse::validationError($e->errors());
         } catch (\Exception $exception) {
             return ApiResponse::serverError($exception->getMessage());
         }
     }
 
-    public function buyCourse(Request $request, string $id)
+    public function buyCourse(Request $request, string $id, string $payment)
     {
         try {
             $request->validate([
-                'reset' => 'required|file|mimes:jpeg,png,jpg,jfif',
+                'phone' => 'nullable|string',
+                'reset' => 'nullable|file|mimes:jpeg,png,jpg,jfif'
             ]);
 
-            $student = request()->user();
+            if (!array_key_exists($payment, $this->payments)) {
+                return ApiResponse::notFound();
+            }
+
+            $student = $request->user();
             $course = Course::findOrFail($id);
-            $name = FileHandler::storeFile(
-                $request->reset,
-                null,
-                $request->reset->getClientOriginalExtension()
-            );
 
-            DB::transaction(function () use ($course, $name, $student) {
+            $data = [
+                'student_id' => $student->id,
+                'phone' => $request->phone ?? '',
+                'total_price' => $course->price,
+                'payment_id' => $this->payments[$payment]
+            ];
 
-                $order = Order::create([
-                    'student_id' => $student->id,
-                    'reset' => $name,
-                    'total_price' => $course->price,
-                ]);
+            if (isset($request->reset) && $request->hasFile('reset')) {
+                $data['reset'] = FileHandler::storeFile(
+                    $request->file('reset'),
+                    null,
+                    $request->file('reset')->getClientOriginalExtension()
+                );
+            }
+
+            DB::transaction(function () use ($course, $data) {
+                $order = Order::create($data);
 
                 CoursesOrders::create([
                     'course_id' => $course->id,
@@ -106,9 +129,8 @@ class OrdersController extends Controller
             return ApiResponse::notFound();
         } catch (ValidationException $e) {
             return ApiResponse::validationError($e->errors());
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             return ApiResponse::serverError();
         }
     }
-
 }

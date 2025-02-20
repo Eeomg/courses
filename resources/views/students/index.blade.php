@@ -5,10 +5,10 @@
     <div class="card w-75 m-auto">
         <div class="card-header d-flex justify-content-between">
             <h3 class="card-title">Students</h3>
-                <form action="{{ route('students.index') }}" method="GET" class="d-flex">
-                    <input type="text" name="id" class="form-control mr-2" placeholder="Search by Id" value="{{ request('id') }}">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </form>
+            <form action="{{ route('students.index') }}" method="GET" class="d-flex">
+                <input type="text" name="name" class="form-control mr-2" placeholder="Search by Name" value="{{ request('id') }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
             <div>
                 <button type="button" class="btn btn-warning" id="bulk-activate-btn" disabled>
                     <i class="fa fa-toggle-on"></i> Activate/Deactivate Selected
@@ -57,10 +57,6 @@
                             <td>
                                 <a href="{{ route('students.edit', $student->id) }}" class="btn btn-success">
                                     <i class="fa fa-edit"></i>
-                                </a>
-
-                                <a href="{{ route('students.show', $student->id) }}" class="btn btn-warning">
-                                    <i class="fa fa-eye"></i>
                                 </a>
                             </td>
                         </tr>

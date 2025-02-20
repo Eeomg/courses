@@ -52,7 +52,7 @@
                                     </div>
                                     <div class="col-2">
                                         <label for="order" class="form-label fw-bold">Video Order</label>
-                                        <input type="number" name="order" class="form-control form-control-lg shadow-sm" id="order" value="{{ old('order') }}" required>
+                                        <input type="number" name="order" class="form-control form-control-lg shadow-sm" id="order" value="{{ old('order',++$videos->videos_count) }}" required>
                                     </div>
                                 </div>
 
@@ -60,11 +60,10 @@
                                     <label for="description" class="form-label fw-bold">Video Description</label>
                                     <textarea name="description" class="form-control form-control-lg shadow-sm" id="description" rows="4">{{ old('description') }}</textarea>
                                 </div>
-                                    <label for="opened" class="form-label fw-bold">Opened</label>
-                                    <div class="form-check">
-                                        <input type="checkbox" name="opened" class="form-check-input" id="opened" value="1" {{ old('opened') ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="opened">Is Opened?</label>
-                                    </div>
+                                <label for="opened" class="form-label fw-bold">Opened</label>
+                                <div class="form-check">
+                                    <input type="checkbox" name="opened" class="form-check-input" id="opened" value="1" {{ old('opened') ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="opened">Is Opened?</label>
                                 </div>
 
                                 <input type="hidden" name="course_id" value="{{ $courseId }}">

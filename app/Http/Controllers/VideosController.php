@@ -25,7 +25,12 @@ class VideosController extends Controller
      */
     public function create(string $courseId)
     {
-        return view('videos.create', compact('courseId'));
+        try {
+            $videos = Course::withCount('videos')->findOrFail($courseId);
+            return view('videos.create', compact('courseId','videos'));
+        } catch (\Exception $exception) {
+            return redirect()->back()->withErrors('course not found');
+        }
     }
 
     /**
@@ -70,10 +75,10 @@ class VideosController extends Controller
     /**
      * عرض تفاصيل كورس معين
      */
-    public function show(Course $course)
+    public function show(string $id)
     {
-        $course->load(['videos','category', 'user']);
-        return view('courses.show', compact('course'));
+        $video = Video::findOrfail($id);
+        return view('videos.show', compact('video'));
     }
 
     /**
@@ -92,31 +97,43 @@ class VideosController extends Controller
     /**
      * تحديث بيانات الكورس
      */
-    public function update(Request $request, Video $video)
+    public function update(Request $request, string $id)
     {
         try {
+
             $validated = Validator::make($request->all(), [
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
-                'video_path' => 'required|string'
+                'video_path' => 'nullable|string',
+                'order' => ['required','integer',new OrderRules($request->course_id)],
+                'opened' => 'nullable|boolean',
             ]);
 
             if($validated->fails())
             {
-                FileHandler::deleteFile($request->video_path);
+               if($request->video_path)
+                    FileHandler::deleteFile($request->video_path);
                 return redirect()->back()->withErrors($validated)->withInput();
+            }
+
+            $video = Video::findOrFail($id);
+            if($request->video_path){
+                FileHandler::deleteFile($video->video);
             }
 
             $video->update([
                 'title' => $request->title,
                 'description' => $request->description,
-                'video' => $request->video_path,
+                'video' => $request->video_path ?? $video->video,
+                'order' => $request->order,
+                'opened' => $request->opened ?? false
             ]);
 
             Alert::success("Success", "Updated successfully");
-            return redirect()->route('courses.show',$request->course_id);
+            return redirect()->route('courses.show',$video->course_id);
         } catch (\Exception $exception) {
-            return redirect()->back()->withErrors('error','cant update')->withInput();
+            Alert::error("Success", $exception->getMessage());
+            return redirect()->back()->withInput();
         }
     }
 
@@ -132,7 +149,7 @@ class VideosController extends Controller
         if ($fileReceived->isFinished()) { // file uploading is complete / all chunks are uploaded
             $file = $fileReceived->getFile(); // get file
 
-            $path = $course->category->name.'/'.$course->title;
+            $path = 'courses/'.$course->category->name.'/'.$course->title;
             $fileName = FileHandler::storeFile($file,$path,$file->getClientOriginalExtension());
 
             // delete chunked file

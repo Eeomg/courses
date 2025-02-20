@@ -15,7 +15,7 @@ class CourseVideosResource extends JsonResource
             'order' => $this->order,
             'slug' => $this->slug,
             'description' => $this->description,
-            'video_url' => $this->video_url,
+            'video_url' => $this->opened ? $this->video_url : null,
             'opened' => $this->opened,
         ];
     }

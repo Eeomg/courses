@@ -2,10 +2,12 @@
 
 namespace App\Facades\FacadesLogic;
 
+use http\Env;
 use Illuminate\Support\Facades\Storage;
 
 class FileHandlerLogic
 {
+
     /**
      * @param $file
      * @return string
@@ -26,7 +28,7 @@ class FileHandlerLogic
      * @param string $oldname
      * @return string
      */
-    public function updateFile($file,string $oldname,$path, $extension, $name = null)
+    public function updateFile($file, $oldname,$path, $extension, $name = null)
     {
         try{
             $this->deleteFile($oldname);
@@ -37,7 +39,7 @@ class FileHandlerLogic
     }
 
     /**
-     * @param string $name
+     * @param $name
      * @return bool
      */
     public function deleteFile(...$names)

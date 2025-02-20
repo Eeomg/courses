@@ -15,7 +15,7 @@
         <div class="card-body">
             <div class="p-2 w-75 m-auto">
                 <video controls class="w-100">
-                    <source src="{{asset('storage/'.$video->video_url) }}" type="video/mp4">
+                    <source src="{{$video->video_url}}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             </div>

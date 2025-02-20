@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('main-content')
-    <div class="card">
-        <div class="card-header d-flex justify-content-between">
+    <div class="card w-75 m-auto">
+        <div class="card-header d-flex justify-content-between ">
             <h3 class="card-title">Categories List</h3>
             <div>
                 <a href="{{ route('categories.create') }}" class="btn btn-primary">

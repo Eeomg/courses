@@ -12,9 +12,11 @@ class OrdersController extends Controller
 {
     public function index()
     {
-        $orders = Order::with('student')->when(request()->name,function ($query,$value){
-            $query->where('name','like','%'.$value.'%');
-        })->latest()->paginate();
+        $orders = Order::with('student','payment')
+            ->where('checked',false)
+            ->when(request()->name,function ($query,$value){
+                $query->where('name','like','%'.$value.'%');
+            })->latest()->paginate();
         return view('orders.index', compact('orders'));
     }
 
@@ -45,6 +47,17 @@ class OrdersController extends Controller
             Alert::success('success', 'Order Approved');
             return redirect()->route('orders.index');
         } catch (\Exception $e) {
+            return redirect()->route('orders.index')->with('error', $e->getMessage());
+        }
+    }
+
+
+    public function delete(Order $order)
+    {
+        try {
+            $order->delete();
+            return redirect()->route('orders.index')->with('success', 'Order Deleted');
+        }catch (\Exception $e) {
             return redirect()->route('orders.index')->with('error', $e->getMessage());
         }
     }

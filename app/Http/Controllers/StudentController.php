@@ -13,8 +13,8 @@ class StudentController extends Controller
 {
     public function index()
     {
-        $students = Student::when(request()->query('id'),function ($query,$value){
-            $query->where('id',$value);
+        $students = Student::when(request()->query('name'),function ($query,$value){
+            $query->where('name',$value);
         })->paginate();
         return view('students.index', compact('students'));
     }
@@ -37,8 +37,6 @@ class StudentController extends Controller
         }catch (\Exception $exception){
             return redirect()->route('students.index')->with('error', 'try again');
         }
-
-
     }
 
     public function bulkAction(Request $request)

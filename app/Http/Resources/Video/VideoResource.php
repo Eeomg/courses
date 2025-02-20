@@ -18,7 +18,7 @@ class VideoResource extends JsonResource
             'description' => $this->description,
             'video_url' => $this->opened ? $this->video_url : null,
             'opened' => $this->opened,
-            'course' => new CourseResource($this->whenLoaded('course')),
+            'course' => new VideoCourseResource($this->whenLoaded('course')),
         ];
     }
 }

@@ -44,7 +44,7 @@ class Video extends Model
 
     public function getVideoUrlAttribute()
     {
-        return env('APP_URL') .'/public/images/'.$this->video;
+        return env('APP_IMAGES_URL').$this->video;
     }
 
 }

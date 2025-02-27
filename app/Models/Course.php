@@ -8,7 +8,6 @@ use Illuminate\Support\Str;
 class Course extends Model
 {
 
-
     protected $fillable = [
         'title',
         'user_id',
@@ -23,6 +22,11 @@ class Course extends Model
     public function videos()
     {
         return $this->hasMany(Video::class);
+    }
+
+    public function pdfs()
+    {
+        return $this->hasMany(Pdf::class);
     }
 
     public function category()

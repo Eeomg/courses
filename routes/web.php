@@ -6,6 +6,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\PannerController;
 use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\VideosController;
@@ -25,6 +26,9 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('banners', PannerController::class)->except(['show','create','edit']);
     Route::resource('payments', \App\Http\Controllers\PaymentController::class)->except(['show','create','edit']);
+
+    Route::resource('pdfs', PdfController::class)->except(['index','create']);
+    Route::get('pdfs/create/{courseId}', [PdfController::class, 'create'])->name('pdfs.create');
 
     Route::resource('categories', CategoryController::class);
     Route::post('/categories/bulk-delete', [CategoryController::class, 'bulkDelete'])->name('categories.bulkDelete');

@@ -18,7 +18,8 @@ class CoursesController extends Controller
                     $query->orderBy('order');
                 },
                 'students',
-                'category'
+                'category',
+                'pdfs'
             ])->where('status','active')
             ->get();
             return ApiResponse::success(CourseResource::collection($courses));
@@ -30,7 +31,7 @@ class CoursesController extends Controller
     public function show($id)
     {
         try {
-            $category = Course::with('category','videos')
+            $category = Course::with('category','videos','pdfs')
                 ->where('id',$id)
                 ->orWhere('slug',$id)
                 ->firstOrFail();

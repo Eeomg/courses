@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Courses;
+namespace App\Http\Resources\Students;
 
-use App\Http\Resources\Category\CategoryResource;
+use App\Http\Resources\Courses\CourseCategoryResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CourseResource extends JsonResource
+class StudentCourseResource extends JsonResource
 {
     public function toArray(Request $request)
     {
@@ -20,8 +20,8 @@ class CourseResource extends JsonResource
             'status' => $this->status,
             'category' => new CourseCategoryResource($this->whenLoaded('category')),
             'videos_count' => $this->videos->count(),
-            'videos' => CourseVideosResource::collection($this->whenLoaded('videos')),
-            'pdfs' => CoursePdfsResource::collection($this->whenLoaded('pdfs')),
+            'videos' => StudentVideoResource::collection($this->whenLoaded('videos')),
+            'pdfs' => StudentPdfsResource::collection($this->whenLoaded('pdfs')),
         ];
     }
 }

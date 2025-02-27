@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Resources\Video;
+namespace App\Http\Resources\Students;
 
-use App\Http\Resources\Courses\CourseResource;
+use App\Http\Resources\Video\VideoCourseResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

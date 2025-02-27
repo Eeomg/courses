@@ -21,7 +21,7 @@
                             </div>
                         @endif
 
-                        <form action="{{ route('courses.store') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('pdfs.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <div class="mb-3">

@@ -26,7 +26,12 @@ class Student extends Model
 
     public function courses()
     {
-        return $this->belongsToMany(Course::class, 'student_courses', 'student_id', 'course_id');
+        return $this->belongsToMany(
+            Course::class,
+            'student_courses',
+            'student_id',
+            'course_id'
+        )->with(['videos','pdfs']);
     }
 
     public function cart()

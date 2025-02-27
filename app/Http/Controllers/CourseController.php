@@ -58,7 +58,7 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        $course->load(['videos','category', 'students']);
+        $course->load(['videos','category', 'students','pdfs']);
         return view('courses.show', compact('course'));
     }
 
@@ -92,6 +92,7 @@ class CourseController extends Controller
             $course->update($data);
             return redirect()->route('courses.index')->with('success', 'Course updated successfully!');
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return redirect()->route('courses.update',$course->id)->with('error', $e->getMessage());
         }
     }
